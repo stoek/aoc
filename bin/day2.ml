@@ -1,11 +1,5 @@
 let lines = Advent.read_lines_from_file "day2.txt"
 
-let print_string_tuples tuples =
-  List.iter (fun (part1, part2) -> print_endline (part1 ^ ", " ^ part2)) tuples
-;;
-
-let print_string_ints = List.iter (fun i -> print_endline (string_of_int i))
-
 let split_string_on_space str =
   let parts = String.split_on_char ' ' str in
   match parts with
@@ -27,8 +21,6 @@ let even_tuples tuples =
   List.map transform_tuple tuples
 ;;
 
-print_string_tuples (even_tuples splitted)
-
 let calc_score_for_tuple tuple =
   let played =
     match tuple with
@@ -47,20 +39,40 @@ let calc_score_for_tuple tuple =
 ;;
 
 let calc_score_for_tuples tpls = List.map calc_score_for_tuple (even_tuples tpls)
-(*let part1 = calc_score_for_tuples splitted
-let () = List.map print_int part1
-  *)
-
 let part1 = List.fold_left ( + ) 0 (calc_score_for_tuples splitted);;
 
-print_endline "Debug:";
-print_string_ints (calc_score_for_tuples splitted);
-print_endline "";
 print_endline "";
 print_endline "Part 1:";
 print_endline (string_of_int part1)
 
-type rps =
-  | R
-  | P
-  | S
+let get_prebased_score a b =
+  match a, b with
+  | "X", 6 -> 2 + b
+  | "Y", 6 -> 3 + b
+  | "Z", 6 -> 1 + b
+  | "X", 3 -> 1 + b
+  | "Y", 3 -> 2 + b
+  | "Z", 3 -> 3 + b
+  | "X", 0 -> 3 + b
+  | "Y", 0 -> 1 + b
+  | "Z", 0 -> 2 + b
+  | _, _ -> 0
+;;
+
+let calc_score_for_tuple_two tuple =
+  let outcome =
+    match tuple with
+    | _, "X" -> 0
+    | _, "Y" -> 3
+    | _, "Z" -> 6
+    | _ -> 0
+  in
+  get_prebased_score (fst tuple) outcome
+;;
+
+let calc_score_for_tuples_two tpls = List.map calc_score_for_tuple_two (even_tuples tpls)
+let part2 = List.fold_left ( + ) 0 (calc_score_for_tuples_two splitted);;
+
+print_endline "";
+print_endline "Part 2:";
+print_endline (string_of_int part2)
